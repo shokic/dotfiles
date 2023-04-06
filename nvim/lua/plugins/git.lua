@@ -33,5 +33,11 @@ return {
     end,
   },
 
-  { "TimUntersberger/neogit", dependencies = "nvim-lua/plenary.nvim" },
+  {
+    "TimUntersberger/neogit",
+    dependencies = "nvim-lua/plenary.nvim",
+    config = function()
+      vim.keymap.set("n", "<leader>gg", ":Neogit<CR>")
+    end,
+  },
 }
