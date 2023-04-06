@@ -6,7 +6,8 @@ return {
 
       theme.setup({
         keywordStyle = { italic = false },
-        statementStyle = { bold = false },
+        statementStyle = { bold = true, italic = false },
+        commentStyle = { italic = false },
       })
 
       vim.cmd("colorscheme kanagawa-dragon")
