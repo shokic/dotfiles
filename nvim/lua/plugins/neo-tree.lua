@@ -13,9 +13,15 @@ return {
       close_if_last_window = true,
       filesystem = {
         follow_current_file = true,
+        filtered_items = {
+          never_show = {
+            ".git",
+          },
+          hide_dotfiles = false,
+        },
       },
     })
 
-    vim.keymap.set("n", "<leader>t", ":Neotree<CR>")
+    vim.keymap.set("n", "<leader>t", ":Neotree right<CR>")
   end,
 }
