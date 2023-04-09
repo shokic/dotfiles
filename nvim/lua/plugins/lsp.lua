@@ -6,7 +6,7 @@ local nmap = function(keys, func, desc)
   vim.keymap.set("n", keys, func, { buffer = bufnr, desc = desc })
 end
 
-local on_attach = function(_, bufnr)
+local on_attach = function(client, bufnr)
   nmap("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
   nmap("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
 
@@ -20,6 +20,8 @@ local on_attach = function(_, bufnr)
   nmap("<leader>h", vim.lsp.buf.hover, "Hover Documentation")
 
   nmap("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+
+  client.server_capabilities.documentFormattingProvider = false
 
   vim.api.nvim_buf_create_user_command(bufnr, "Format", function(_)
     vim.lsp.buf.format()

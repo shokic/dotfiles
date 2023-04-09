@@ -22,6 +22,6 @@ return {
       },
     })
 
-    vim.keymap.set("n", "<leader>t", ":Neotree right<CR>")
+    vim.keymap.set("n", "<leader>t", ":Neotree float<CR>")
   end,
 }
