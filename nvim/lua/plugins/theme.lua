@@ -10,7 +10,7 @@ return {
         commentStyle = { italic = false },
         colors = {
           palette = {
-            dragonBlack4 = "#1F1C1C",
+            dragonBlack4 = "#181616",
             dragonBlack6 = "#272523",
           },
         },
