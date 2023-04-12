@@ -24,6 +24,10 @@ return {
             node_decremental = "<M-space>",
           },
         },
+        context_commentstring = {
+          enable = true,
+          enable_autocmd = false,
+        },
         textobjects = {
           select = {
             enable = true,
