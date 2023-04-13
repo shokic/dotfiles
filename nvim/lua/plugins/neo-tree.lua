@@ -20,8 +20,11 @@ return {
           hide_dotfiles = false,
         },
       },
+      buffers = {
+        follow_current_file = true,
+      },
     })
 
-    vim.keymap.set("n", "<leader>t", ":Neotree float<CR>")
+    vim.keymap.set("n", "<leader>t", ":Neotree right<CR>")
   end,
 }
