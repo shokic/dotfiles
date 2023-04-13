@@ -15,6 +15,7 @@ return {
       local telescope = require("telescope")
       local builtin = require("telescope.builtin")
       local themes = require("telescope.themes")
+      local actions = require("telescope.actions")
 
       telescope.setup({
         defaults = {
@@ -22,6 +23,9 @@ return {
             i = {
               ["<C-u>"] = false,
               ["<C-d>"] = false,
+            },
+            n = {
+              ["d"] = actions.delete_buffer
             },
           },
         },
