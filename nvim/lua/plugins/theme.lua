@@ -1,7 +1,21 @@
 return {
-  "sainnhe/gruvbox-material",
+  "rebelot/kanagawa.nvim",
   config = function()
-    vim.g.gruvbox_material_background = "hard"
-    vim.cmd("colorscheme gruvbox-material")
+    local theme = require("kanagawa")
+
+    theme.setup({
+      keywordStyle = { italic = false },
+      statementStyle = { bold = true, italic = false },
+      commentStyle = { italic = false },
+      colors = {
+        palette = {
+          dragonBlack3 = "#1e2021",
+          dragonBlack4 = "#1e2021",
+          dragonBlack6 = "#272523",
+        },
+      },
+    })
+
+    vim.cmd("colorscheme kanagawa-dragon")
   end,
 }
