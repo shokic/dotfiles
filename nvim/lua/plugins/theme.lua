@@ -11,7 +11,7 @@ return {
         palette = {
           dragonBlack3 = "#1e2021",
           dragonBlack4 = "#1e2021",
-          dragonBlack6 = "#272523",
+          dragonBlack6 = "#2B2927",
         },
       },
     })
