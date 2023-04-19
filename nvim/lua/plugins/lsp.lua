@@ -37,6 +37,22 @@ local servers = {
   },
 }
 
+local setup_commands = function(server_name)
+  if server_name == "tsserver" then
+    return {
+      OrganizeImports = {
+        function()
+          vim.lsp.buf.execute_command({
+            command = "_typescript.organizeImports",
+            arguments = { vim.api.nvim_buf_get_name(0) },
+          })
+        end,
+        desc = "Organize imports",
+      },
+    }
+  end
+end
+
 return {
   {
     "hrsh7th/nvim-cmp",
@@ -114,6 +130,7 @@ return {
             capabilities = capabilities,
             on_attach = on_attach,
             settings = servers[server_name],
+            commands = setup_commands(server_name),
           })
         end,
       })
