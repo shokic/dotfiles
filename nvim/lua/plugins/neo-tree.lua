@@ -18,6 +18,7 @@ return {
             ".git",
           },
           hide_dotfiles = false,
+          hide_gitignored = false,
         },
       },
       buffers = {
