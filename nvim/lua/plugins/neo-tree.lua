@@ -24,6 +24,11 @@ return {
       buffers = {
         follow_current_file = true,
       },
+      default_component_configs = {
+        indent = {
+          with_markers = false,
+        },
+      },
     })
 
     vim.keymap.set("n", "<leader>t", ":Neotree right<CR>")
