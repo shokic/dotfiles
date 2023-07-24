@@ -7,3 +7,4 @@ end
 starship init fish | source
 
 alias ls="exa --icons"
+alias cat="bat"
