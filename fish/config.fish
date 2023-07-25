@@ -8,3 +8,5 @@ starship init fish | source
 
 alias ls="exa --icons"
 alias cat="bat"
+
+alias dev-sandbox="aws-vault exec dev-sandbox --"
