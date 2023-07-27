@@ -7,7 +7,7 @@ return {
         "neovim/nvim-lspconfig",
         dependencies = {
             { "hrsh7th/cmp-nvim-lsp" },
-            { "folke/neodev.nvim" },
+            { "folke/neodev.nvim", opts = {} },
             {
                 "j-hui/fidget.nvim",
                 tag = "legacy",
