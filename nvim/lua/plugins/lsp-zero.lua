@@ -40,7 +40,13 @@ return {
                     timeout_ms = 10000,
                 },
                 servers = {
-                    ["null-ls"] = { "javascript", "typescript", "lua" },
+                    ["null-ls"] = {
+                        "javascript",
+                        "typescript",
+                        "lua",
+                        "json",
+                        "jsonc",
+                    },
                 },
             })
 

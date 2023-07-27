@@ -23,6 +23,10 @@ return {
                     enabled = true,
                     style = "nvchad",
                 },
+                indent_blankline = {
+                    enabled = true,
+                    colored_indent_levels = false,
+                },
             },
         })
         vim.cmd.colorscheme("catppuccin")
