@@ -43,6 +43,7 @@ return {
                     ["null-ls"] = {
                         "javascript",
                         "typescript",
+                        "typescriptreact",
                         "lua",
                         "json",
                         "jsonc",
