@@ -47,6 +47,20 @@ return {
                     { buffer = bufnr, desc = "LSP: Go to definition" }
                 )
 
+                vim.keymap.set(
+                    "n",
+                    "gD",
+                    vim.lsp.buf.declaration,
+                    { buffer = bufnr, desc = "LSP: Go to declaration" }
+                )
+
+                vim.keymap.set(
+                    "n",
+                    "gI",
+                    vim.lsp.buf.implementation,
+                    { buffer = bufnr, desc = "LSP: Go to implementation" }
+                )
+
                 vim.keymap.set("n", "gr", function()
                     telescope_builtin.lsp_references({
                         show_line = false,
@@ -55,6 +69,41 @@ return {
                     buffer = bufnr,
                     desc = "LSP: Go to references",
                 })
+
+                vim.keymap.set(
+                    "n",
+                    "<leader>D",
+                    vim.lsp.buf.type_definition,
+                    { buffer = bufnr, desc = "LSP: Go to type definition" }
+                )
+
+                vim.keymap.set(
+                    "n",
+                    "<leader>ds",
+                    vim.lsp.buf.document_symbol,
+                    { buffer = bufnr, desc = "LSP: Document symbols" }
+                )
+
+                vim.keymap.set(
+                    "n",
+                    "<leader>ws",
+                    vim.lsp.buf.workspace_symbol,
+                    { buffer = bufnr, desc = "LSP: Workspace symbols" }
+                )
+
+                vim.keymap.set(
+                    "n",
+                    "<leader>rn",
+                    vim.lsp.buf.rename,
+                    { buffer = bufnr, desc = "LSP: Rename" }
+                )
+
+                vim.keymap.set(
+                    "n",
+                    "<leader>ca",
+                    vim.lsp.buf.code_action,
+                    { buffer = bufnr, desc = "LSP: Code action" }
+                )
             end)
 
             lsp.format_mapping("f", {
