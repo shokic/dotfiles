@@ -31,10 +31,33 @@ return {
             local lsp = require("lsp-zero").preset({})
 
             lsp.on_attach(function(client, bufnr)
-                lsp.default_keymaps({ buffer = bufnr })
+                local telescope_builtin = require("telescope.builtin")
+
+                vim.keymap.set(
+                    "n",
+                    "<leader>h",
+                    vim.lsp.buf.hover,
+                    { buffer = bufnr, desc = "LSP: Hover" }
+                )
+
+                vim.keymap.set(
+                    "n",
+                    "gd",
+                    vim.lsp.buf.definition,
+                    { buffer = bufnr, desc = "LSP: Go to definition" }
+                )
+
+                vim.keymap.set("n", "gr", function()
+                    telescope_builtin.lsp_references({
+                        show_line = false,
+                    })
+                end, {
+                    buffer = bufnr,
+                    desc = "LSP: Go to references",
+                })
             end)
 
-            lsp.format_mapping("F", {
+            lsp.format_mapping("f", {
                 format_opts = {
                     async = false,
                     timeout_ms = 10000,
@@ -53,9 +76,19 @@ return {
 
             lsp.extend_cmp()
 
-            require("mason").setup({})
+            require("mason").setup({
+                ensure_installed = {
+                    "prettier",
+                    "stylua",
+                },
+            })
             require("mason-lspconfig").setup({
-                ensure_installed = { "tsserver", "lua_ls" },
+                ensure_installed = {
+                    "tsserver",
+                    "lua_ls",
+                    "eslint",
+                    "jsonls",
+                },
                 handlers = {
                     lsp.default_setup,
                 },
