@@ -3,6 +3,8 @@ return {
 
     { "tpope/vim-sleuth" },
 
+    { "RRethy/vim-illuminate" },
+
     { "folke/which-key.nvim", opts = {} },
 
     { "m4xshen/autoclose.nvim", opts = {} },
