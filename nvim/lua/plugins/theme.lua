@@ -1,18 +1,17 @@
 return {
-    "rebelot/kanagawa.nvim",
+    "catppuccin/nvim",
     priority = 1000,
     config = function()
-        require("kanagawa").setup({
-            statementStyle = { bold = false },
-            keywordStyle = { italic = false },
-            commentStyle = { italic = false },
-            colors = {
-                palette = {
-                    dragonBlack3 = "#181818",
-                    dragonBlack4 = "#181818",
+        require("catppuccin").setup({
+            flavour = "mocha",
+            no_italic = true,
+            no_bold = true,
+            color_overrides = {
+                all = {
+                    base = "#1f1f1f",
                 },
             },
         })
-        vim.cmd.colorscheme("kanagawa-dragon")
+        vim.cmd.colorscheme("catppuccin")
     end,
 }
