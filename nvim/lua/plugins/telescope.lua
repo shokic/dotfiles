@@ -42,12 +42,12 @@ return {
 
             telescope.load_extension("fzf")
 
-            vim.keymap.set(
-                "n",
-                "<leader>?",
-                builtin.oldfiles,
-                { desc = "[?] Find recently opened files" }
-            )
+            vim.keymap.set("n", "<leader>,", function()
+                builtin.oldfiles(themes.get_dropdown({
+                    winblend = 10,
+                    previewer = false,
+                }))
+            end, { desc = "[?] Find recently opened files" })
 
             vim.keymap.set(
                 "n",
