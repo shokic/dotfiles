@@ -25,7 +25,6 @@ return {
 
     {
         "VonHeikemen/lsp-zero.nvim",
-        dependencies = { "onsails/lspkind.nvim" },
         branch = "dev-v3",
         config = function()
             local lsp = require("lsp-zero").preset({})
@@ -146,15 +145,6 @@ return {
             local cmp = require("cmp")
             local cmp_action = require("lsp-zero").cmp_action()
 
-            local lspkind = require("lspkind")
-            lspkind.init({
-                symbol_map = {
-                    Copilot = "",
-                },
-            })
-
-            vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
-
             cmp.setup({
                 sources = {
                     { name = "copilot" },
@@ -172,11 +162,6 @@ return {
                 },
                 formatting = {
                     fields = { "abbr", "kind", "menu" },
-                    format = lspkind.cmp_format({
-                        mode = "symbol",
-                        maxwidth = 150,
-                        ellipsis_char = "...",
-                    }),
                 },
             })
         end,
