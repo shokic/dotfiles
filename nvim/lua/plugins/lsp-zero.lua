@@ -150,10 +150,6 @@ return {
                     { name = "copilot" },
                     { name = "nvim_lsp" },
                 },
-                window = {
-                    completion = cmp.config.window.bordered(),
-                    documentation = cmp.config.window.bordered(),
-                },
                 mapping = {
                     ["<Tab>"] = cmp_action.luasnip_supertab(),
                     ["<S-Tab>"] = cmp_action.luasnip_shift_supertab(),
