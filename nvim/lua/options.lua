@@ -2,6 +2,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 vim.wo.number = true
+vim.wo.relativenumber = true
 vim.o.mouse = "a"
 vim.o.clipboard = "unnamedplus"
 vim.o.breakindent = true
@@ -15,3 +16,5 @@ vim.o.timeoutlen = 300
 vim.o.completeopt = "menuone,noselect"
 vim.o.termguicolors = true
 vim.o.hidden = true
+vim.opt.laststatus = 2
+vim.o.cmdheight = 0
