@@ -23,6 +23,7 @@ return {
             colors = {
                 palette = {
                     sumiInk3 = "#1e1e1e",
+                    peachRed = "#e46876",
                 },
                 theme = {
                     all = {

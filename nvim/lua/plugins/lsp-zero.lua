@@ -28,6 +28,7 @@ return {
         branch = "dev-v3",
         config = function()
             local lsp = require("lsp-zero").preset({})
+            lsp.extend_lspconfig()
 
             lsp.on_attach(function(client, bufnr)
                 local telescope_builtin = require("telescope.builtin")
