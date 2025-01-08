@@ -1,6 +1,12 @@
+# Font
 font-family = JuliaMono
 font-size = 17
+font-thicken = 1
+
+# Aspect
 macos-titlebar-style = tabs
-theme = CutiePro
+theme = Kanagawa Dragon
+
+# To open the window maximized
 window-width = 3000
 window-height = 3000
