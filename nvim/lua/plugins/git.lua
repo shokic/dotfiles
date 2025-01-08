@@ -19,6 +19,15 @@ return {
       "sindrets/diffview.nvim",
       "nvim-telescope/telescope.nvim",
     },
-    config = true,
+    config = function()
+      require("neogit").setup({})
+
+      vim.keymap.set("n", "<leader>g", ":Neogit<CR>", { desc = "Open Neogit" })
+    end,
+  },
+
+  {
+    "tpope/vim-fugitive",
+    opt = {},
   },
 }
