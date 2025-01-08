@@ -8,6 +8,7 @@ set -gx PATH "/opt/homebrew/bin" $PATH
 
 alias ls="eza --icons"
 alias cat="bat"
+alias vim="nvim"
 
 function se
     sesh connect $(sesh list | fzf)
