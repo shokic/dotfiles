@@ -7,10 +7,10 @@ font-feature = -calt
 font-feature = -dlig
 adjust-cell-height = 9%
 
-# Aspect
+# Appearance
 macos-titlebar-style = tabs
 theme = tokyonight_night
 
-# To open the window maximized
+# Open the window maximized
 window-width = 3000
 window-height = 3000

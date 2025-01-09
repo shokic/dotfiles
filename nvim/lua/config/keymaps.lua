@@ -22,3 +22,6 @@ vim.keymap.set("v", "<space>x", ":lua<CR>")
 
 vim.keymap.set("n", "<leader>w", ":w<CR>", { noremap = true, desc = "Save file" })
 vim.keymap.set("n", "<leader>q", ":q<CR>", { noremap = true, desc = "Save file" })
+
+vim.keymap.set("n", "[b", ":bprevious<CR>", { noremap = true, desc = "Previous buffer" })
+vim.keymap.set("n", "]b", ":bnext<CR>", { noremap = true, desc = "Next buffer" })
