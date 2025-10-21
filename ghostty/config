@@ -9,8 +9,10 @@ adjust-cell-height = 9%
 
 # Appearance
 macos-titlebar-style = tabs
-theme = tokyonight_night
+theme = TokyoNight Night
 
 # Open the window maximized
 window-width = 3000
 window-height = 3000
+
+shell-integration-features = sudo
