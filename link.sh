@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ln -snf ~/repos/dotfiles/fish/* ~/.config/fish
-ln -snf ~/repos/dotfiles/ghostty/* ~/.config/ghostty
-ln -snf ~/repos/dotfiles/nvim/* ~/.config/nvim
-ln -snf ~/repos/dotfiles/Brewfile ~/.config/Brewfile
+ln -snf ~/code/repos/dotfiles/fish/* ~/.config/fish
+ln -snf ~/code/repos/dotfiles/ghostty/* ~/.config/ghostty
+ln -snf ~/code/repos/dotfiles/nvim/* ~/.config/nvim
+ln -snf ~/code/repos/dotfiles/Brewfile ~/.config/Brewfile
