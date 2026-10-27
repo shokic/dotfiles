@@ -1,0 +1,159 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "agent_servers": {
+    "claude-acp": {
+      "type": "registry",
+    },
+  },
+  "cursor_animation": {
+    "enabled": true,
+  },
+  "disable_ai": true,
+  "search": {
+    "center_on_match": true,
+    "button": false,
+  },
+  "git": {
+    "inline_blame": {
+      "enabled": true,
+      "show_commit_summary": false,
+      "delay_ms": 0,
+      "location": "status_bar",
+    },
+  },
+  "theme": {
+    "mode": "dark",
+    "light": "Token Light",
+    "dark": "Token Dark",
+  },
+  "markdown_preview": {
+    "code_font_family": "MonoLisa",
+    "font_family": "SF Pro",
+    "limit_content_width": true,
+    "max_width": 1000.0,
+  },
+  "preview_tabs": {
+    "enable_preview_from_file_finder": false,
+  },
+  "file_finder": {
+    "modal_max_width": "xlarge",
+  },
+  "outline_panel": {
+    "dock": "left",
+  },
+  "languages": {
+    "Markdown": {
+      "soft_wrap": "editor_width",
+    },
+  },
+  "terminal": {
+    "font_family": "MonoLisa",
+    "font_size": 16.0,
+  },
+  "cli_default_open_behavior": "existing_window",
+  "collaboration_panel": {
+    "button": false,
+    "dock": "left",
+  },
+  "agent": {
+    "button": false,
+    "dock": "right",
+    "favorite_models": [],
+    "model_parameters": [],
+  },
+  "diff_view_style": "unified",
+  "use_system_window_tabs": false,
+  "agent_ui_font_size": 16.0,
+  "agent_buffer_font_size": 18.0,
+  "icon_theme": {
+    "mode": "light",
+    "light": "Base Charmed Icons",
+    "dark": "Base Charmed Icons",
+  },
+  "close_on_file_delete": false,
+  "lsp": {
+    "vtsls": {
+      "settings": {
+        "typescript": {
+          "updateImportsOnFileMove": {
+            "enabled": "always",
+          },
+        },
+        "javascript": {
+          "updateImportsOnFileMove": {
+            "enabled": "always",
+          },
+        },
+      },
+      "enable_lsp_tasks": true,
+    },
+  },
+  "git_panel": {
+    "sort_by": "path",
+    "group_by": "staging",
+    "dock": "left",
+    "tree_view": true,
+  },
+  "format_on_save": "on",
+  "prettier": {
+    "allowed": true,
+  },
+  "edit_predictions": {
+    "provider": "zed",
+    "mode": "eager",
+  },
+  "code_actions_on_format": {
+    "source.fixAll.eslint": true,
+  },
+  "diagnostics": {
+    "inline": {
+      "enabled": true,
+    },
+  },
+  "relative_line_numbers": "enabled",
+  "show_wrap_guides": true,
+  "indent_guides": {
+    "enabled": false,
+  },
+  "project_panel": {
+    "hide_root": true,
+    "scrollbar": {
+      "show": "auto",
+    },
+    "starts_open": false,
+    "indent_size": 10.0,
+    "entry_spacing": "standard",
+    "indent_guides": {
+      "show": "never",
+    },
+    "dock": "left",
+  },
+  "tabs": {
+    "show_diagnostics": "off",
+    "file_icons": true,
+    "git_status": true,
+  },
+  "tab_bar": {
+    "show": false,
+  },
+  "title_bar": {
+    "show_sign_in": true,
+    "show_user_picture": false,
+    "show_onboarding_banner": true,
+    "show_project_items": true,
+    "show_branch_name": true,
+  },
+  "ui_font_family": "MonoLisa",
+  "buffer_font_family": "MonoLisa",
+  "vim_mode": true,
+  "ui_font_size": 16.0,
+  "buffer_font_size": 16.0,
+  "buffer_font_fallbacks": ["Symbols Nerd Font"],
+}
