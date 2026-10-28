@@ -12,6 +12,9 @@ DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 HAS_TTY=""
 if (exec < /dev/tty) 2>/dev/null; then HAS_TTY=1; fi
 
+# Set when anything changes, to suggest reloading the shell at the end
+CHANGED=""
+
 # Print what's currently at $1 so it can be checked before overwriting
 show() {
   if [ -L "$1" ]; then
@@ -60,6 +63,7 @@ link() {
   rm -rf "$2"
   ln -sn "$1" "$2"
   echo "linked $2"
+  CHANGED=1
 }
 
 # Remove broken symlinks left over from previous runs
@@ -69,6 +73,7 @@ for dir in ~/.config/fish ~/.config/fish/conf.d ~/.config/fish/functions ~/.conf
     if [ -L "$f" ] && [ ! -e "$f" ]; then
       echo "removing broken symlink $f"
       rm -f "$f"
+      CHANGED=1
     fi
   done
 done
@@ -102,6 +107,7 @@ elif [ "$(dscl . -read ~/ UserShell | awk '{print $2}')" != "$FISH" ]; then
     echo "$FISH" | sudo tee -a /etc/shells > /dev/null
   fi
   chsh -s "$FISH"
+  CHANGED=1
   echo "default shell set to $FISH (applies to new terminal windows)"
 fi
 
@@ -116,4 +122,12 @@ then
   echo
   echo "fish plugins changed, running fisher update"
   "$FISH" -c 'fisher update'
+  CHANGED=1
+fi
+
+# A script can't reload the shell that ran it, so leave that to the user.
+# exec fish starts a fresh fish in place of the current shell.
+if [ -n "$CHANGED" ] && [ -n "$FISH" ]; then
+  echo
+  echo "done: run \`exec fish\` to reload your shell"
 fi
