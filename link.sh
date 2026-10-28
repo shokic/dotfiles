@@ -104,3 +104,16 @@ elif [ "$(dscl . -read ~/ UserShell | awk '{print $2}')" != "$FISH" ]; then
   chsh -s "$FISH"
   echo "default shell set to $FISH (applies to new terminal windows)"
 fi
+
+# Install or remove fish plugins so they match fish/fish_plugins.
+# Only when the lists differ: `fisher update` re-downloads every plugin.
+if [ -n "$FISH" ] && ! "$FISH" <<'EOF'
+set -l wanted (string match -r '^[^\s]+$' < $__fish_config_dir/fish_plugins | string replace -- \~ ~ | sort)
+set -l installed (printf '%s\n' $_fisher_plugins | sort)
+test "$wanted" = "$installed"
+EOF
+then
+  echo
+  echo "fish plugins changed, running fisher update"
+  "$FISH" -c 'fisher update'
+fi
