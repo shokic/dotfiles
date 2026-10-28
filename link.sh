@@ -87,3 +87,20 @@ link "$DOTFILES/zed.settings.jsonc" ~/.config/zed/settings.json
 
 # Found by `brew bundle` via HOMEBREW_BUNDLE_FILE (set in fish/conf.d/homebrew.fish)
 link "$DOTFILES/Brewfile" ~/.config/Brewfile
+
+# Make fish the login shell (https://fishshell.com/docs/current/#default-shell)
+FISH="$(command -v fish || true)"
+if [ -z "$FISH" ]; then
+  # Fresh machine: fish comes from the Brewfile, so this step has to wait
+  echo
+  echo "fish isn't installed yet: run \`brew bundle\` here, then re-run ./link.sh"
+# Ask macOS directly: $SHELL keeps the old value until the next login
+elif [ "$(dscl . -read ~/ UserShell | awk '{print $2}')" != "$FISH" ]; then
+  # chsh only accepts shells listed in /etc/shells
+  if ! grep -qx "$FISH" /etc/shells; then
+    echo "adding $FISH to /etc/shells (needs sudo)"
+    echo "$FISH" | sudo tee -a /etc/shells > /dev/null
+  fi
+  chsh -s "$FISH"
+  echo "default shell set to $FISH (applies to new terminal windows)"
+fi
