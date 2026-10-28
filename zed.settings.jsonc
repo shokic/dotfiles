@@ -3,8 +3,7 @@
 // Docs: https://zed.dev/docs/configuring-zed
 {
   // ── Fonts & theme ────────────────────────────────────────────────
-  // The terminal uses these editor font settings too
-  "ui_font_family": "MonoLisa",
+  // Editor font; the terminal uses it too. The interface keeps Zed's default font.
   "buffer_font_family": "MonoLisa",
   "buffer_font_size": 16,
   "icon_theme": "Base Charmed Icons",
