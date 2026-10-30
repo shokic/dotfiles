@@ -68,7 +68,7 @@ link() {
 }
 
 # Remove broken symlinks left over from previous runs
-for dir in ~/.config/fish ~/.config/fish/conf.d ~/.config/fish/functions ~/.config/ghostty ~/.config/zed; do
+for dir in ~/.config/fish ~/.config/fish/conf.d ~/.config/fish/functions ~/.config/ghostty ~/.config/zed ~/.config/rex; do
   [ -d "$dir" ] || continue
   for f in "$dir"/*; do
     if [ -L "$f" ] && [ ! -e "$f" ]; then
@@ -87,6 +87,8 @@ while read -r f; do
 done < <(find . -type f)
 
 link "$DOTFILES/ghostty/config" ~/.config/ghostty/config
+
+link "$DOTFILES/rex/init.lua" ~/.config/rex/init.lua
 
 # Zed: file by file, so Zed can keep its own files (prompts, themes) next to them
 link "$DOTFILES/zed/settings.json" ~/.config/zed/settings.json

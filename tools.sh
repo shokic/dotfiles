@@ -1,5 +1,5 @@
 #!/bin/bash
-# Tools that come with their own installer instead of Homebrew.
+# Tools and apps that don't come from Homebrew: they have their own installer, or a .dmg to download.
 #
 #   ./tools.sh                    install the ones that are missing (run by setup.sh)
 #   ./tools.sh uninstall <tool>   remove one; its settings and data are kept
@@ -10,7 +10,7 @@
 # Stop on errors, unset variables, and failures inside pipes
 set -euo pipefail
 
-TOOLS="claude viteplus herdr"
+TOOLS="claude viteplus herdr rex"
 
 # Delete each path given, saying so
 remove() {
@@ -29,6 +29,47 @@ keep() {
     if [ -e "$p" ]; then echo "kept $p (settings and data: delete it yourself if you don't need it)"; fi
   done
 }
+
+# Print where the app with bundle ID $1 is installed, if it is.
+# Found by ID rather than name, so an app renamed by an update (e.g. "Rex Beta" to "Rex") still counts.
+app_path() {
+  local plist app
+  # Quick text search first, then the exact ID check (Info.plist can be binary)
+  while IFS= read -r plist; do
+    app="$(dirname "$(dirname "$plist")")"
+    if [ "$(defaults read "$app/Contents/Info" CFBundleIdentifier 2>/dev/null)" = "$1" ]; then
+      echo "$app"
+      return
+    fi
+  done < <(grep -lsF "$1" /Applications/*.app/Contents/Info.plist ~/Applications/*.app/Contents/Info.plist)
+}
+
+# Install the app inside the .dmg at URL $1 into /Applications. Only if Apple notarized it and
+# it's signed by developer team $2, so a different app served from that URL never gets installed.
+# Runs in a subshell (parentheses) so the cleanup trap only applies here.
+install_dmg() (
+  tmp="$(mktemp -d)"
+  trap 'hdiutil detach -quiet "$tmp/mnt" 2>/dev/null || true; rm -rf "$tmp"' EXIT
+  curl -fsSL -o "$tmp/app.dmg" "$1"
+  mkdir "$tmp/mnt"
+  hdiutil attach -nobrowse -readonly -noautoopen -quiet -mountpoint "$tmp/mnt" "$tmp/app.dmg"
+  app="$(find "$tmp/mnt" -maxdepth 1 -name '*.app' | head -1)"
+  if [ -z "$app" ]; then
+    echo "⚠️  no app in $1"
+    exit 1
+  fi
+  if ! spctl --assess --type execute "$app" 2>/dev/null; then
+    echo "⚠️  $(basename "$app") isn't notarized by Apple: not installed"
+    exit 1
+  fi
+  team="$(codesign -dv "$app" 2>&1 | sed -n 's/^TeamIdentifier=//p')"
+  if [ "$team" != "$2" ]; then
+    echo "⚠️  $(basename "$app") is signed by team ${team:-none}, not $2: not installed"
+    exit 1
+  fi
+  ditto "$app" "/Applications/$(basename "$app")"
+  echo "installed /Applications/$(basename "$app")"
+)
 
 ## Claude Code
 
@@ -64,6 +105,16 @@ herdr_uninstall() {
   remove ~/Applications/Herdr.app /Applications/Herdr.app \
     ~/.local/bin/herdr-app ~/.local/bin/herdr-core ~/.local/bin/hc
   keep ~/.config/herdr-app ~/.local/state/herdr-core ~/Library/Preferences/dev.herdr.app.plist
+}
+
+## Rex (from a .dmg, signed by Superlogical, Inc.; updates itself)
+
+rex_installed() { [ -n "$(app_path com.superlogical.rex)" ]; }
+rex_install() { install_dmg https://blob.superlogical.com/download/rex-app/preview/latest.dmg AG92C3PT77; }
+rex_uninstall() {
+  remove "$(app_path com.superlogical.rex)"
+  keep ~/Library/Preferences/com.superlogical.rex.plist \
+    ~/Library/"Application Support"/com.superlogical.rex ~/Library/Caches/com.superlogical.rex
 }
 
 ## Run
