@@ -1,6 +1,7 @@
 #!/bin/bash
-# Symlinks the files in this repo into their places in ~ and ~/.config.
-# Safe to re-run: anything already at a target path is replaced.
+# Sets up this Mac from the repo: symlinks the configs into ~/.config, applies the macOS
+# settings (macos.sh), installs the curl tools (tools.sh), and sets up fish.
+# Safe to re-run: only what's out of date changes, and existing files are only replaced after asking.
 
 # Stop on errors, unset variables, and failures inside pipes
 set -euo pipefail
@@ -93,12 +94,18 @@ link "$DOTFILES/zed.settings.jsonc" ~/.config/zed/settings.json
 # Found by `brew bundle` via HOMEBREW_BUNDLE_FILE (set in fish/conf.d/homebrew.fish)
 link "$DOTFILES/Brewfile" ~/.config/Brewfile
 
+# macOS preferences: trackpad, keyboard, Dock, Finder...
+"$DOTFILES/macos.sh"
+
+# Tools installed with curl instead of Homebrew
+"$DOTFILES/tools.sh"
+
 # Make fish the login shell (https://fishshell.com/docs/current/#default-shell)
 FISH="$(command -v fish || true)"
 if [ -z "$FISH" ]; then
   # Fresh machine: fish comes from the Brewfile, so this step has to wait
   echo
-  echo "fish isn't installed yet: run \`brew bundle\` here, then re-run ./link.sh"
+  echo "fish isn't installed yet: run \`brew bundle\` here, then re-run ./setup.sh"
 # Ask macOS directly: $SHELL keeps the old value until the next login
 elif [ "$(dscl . -read ~/ UserShell | awk '{print $2}')" != "$FISH" ]; then
   # chsh only accepts shells listed in /etc/shells
