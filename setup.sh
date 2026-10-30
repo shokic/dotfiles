@@ -1,6 +1,6 @@
 #!/bin/bash
 # Sets up this Mac from the repo: symlinks the configs into ~/.config, applies the macOS
-# settings (macos.sh), installs the curl tools (tools.sh), and sets up fish.
+# settings (macos.sh), installs the curl tools (tools.sh), registers fonts, and sets up fish.
 # Safe to re-run: only what's out of date changes, and existing files are only replaced after asking.
 
 # Stop on errors, unset variables, and failures inside pipes
@@ -68,7 +68,7 @@ link() {
 }
 
 # Remove broken symlinks left over from previous runs
-for dir in ~/.config/fish ~/.config/fish/conf.d ~/.config/fish/functions ~/.config/ghostty; do
+for dir in ~/.config/fish ~/.config/fish/conf.d ~/.config/fish/functions ~/.config/ghostty ~/.config/zed; do
   [ -d "$dir" ] || continue
   for f in "$dir"/*; do
     if [ -L "$f" ] && [ ! -e "$f" ]; then
@@ -88,8 +88,9 @@ done < <(find . -type f)
 
 link "$DOTFILES/ghostty/config" ~/.config/ghostty/config
 
-# Zed expects plain settings.json; the repo uses .jsonc so editors allow comments in it
-link "$DOTFILES/zed.settings.jsonc" ~/.config/zed/settings.json
+# Zed: file by file, so Zed can keep its own files (prompts, themes) next to them
+link "$DOTFILES/zed/settings.json" ~/.config/zed/settings.json
+link "$DOTFILES/zed/keymap.json" ~/.config/zed/keymap.json
 
 # Found by `brew bundle` via HOMEBREW_BUNDLE_FILE (set in fish/conf.d/homebrew.fish)
 link "$DOTFILES/Brewfile" ~/.config/Brewfile
@@ -99,6 +100,56 @@ link "$DOTFILES/Brewfile" ~/.config/Brewfile
 
 # Tools installed with curl instead of Homebrew
 "$DOTFILES/tools.sh"
+
+# Fonts that can't be shared (MonoLisa) aren't in this public repo, so they're kept in iCloud Drive, in a
+# fonts/ folder. Copy the ones missing from ~/Library/Fonts.
+# Problems only warn: a missing font shouldn't stop the rest of the setup.
+ICLOUD_FONTS="$HOME/Library/Mobile Documents/com~apple~CloudDocs/fonts"
+if [ -d "$ICLOUD_FONTS" ]; then
+  while IFS= read -r -d '' f; do
+    if [ ! -e ~/Library/Fonts/"$(basename "$f")" ]; then
+      mkdir -p ~/Library/Fonts
+      # Reading the file also downloads it, if iCloud only kept it online
+      if cp "$f" ~/Library/Fonts/; then
+        echo "copied font $(basename "$f") from iCloud Drive"
+      else
+        echo "⚠️  couldn't copy font $f"
+      fi
+    fi
+  done < <(find "$ICLOUD_FONTS" -type f \( -iname '*.otf' -o -iname '*.ttf' -o -iname '*.otc' -o -iname '*.ttc' \) -print0)
+fi
+
+# Zed's code font: without it, Zed silently falls back to another font.
+# Also covers Macs without the iCloud folder, unless MonoLisa was installed by hand.
+if ! ls ~/Library/Fonts/MonoLisa* > /dev/null 2>&1; then
+  echo
+  echo "⚠️  MonoLisa isn't installed: add it to iCloud Drive/fonts/ and re-run, or install it by hand"
+fi
+
+# Fonts from the Brewfile land in ~/Library/Fonts, but macOS doesn't always register them,
+# and apps can't use a font until it is. Register the ones that aren't, like Font Book does.
+# (JavaScript for Automation, because it can call the macOS font functions directly.)
+FONTS="$(osascript -l JavaScript <<'EOF'
+ObjC.import("CoreText");
+const dir = $("~/Library/Fonts").stringByExpandingTildeInPath;
+const files = ObjC.deepUnwrap($.NSFileManager.defaultManager.contentsOfDirectoryAtPathError(dir, null)) || [];
+const registered = [];
+for (const name of files) {
+  if (!/\.(otf|ttf|otc|ttc)$/i.test(name)) continue;
+  const url = $.NSURL.fileURLWithPath(dir.stringByAppendingPathComponent(name));
+  // Scope 0: not registered. 2: registered for this user, persistently.
+  if ($.CTFontManagerGetScopeForURL(url) === 0 && $.CTFontManagerRegisterFontsForURL(url, 2, null)) {
+    registered.push(name);
+  }
+}
+registered.join("\n");
+EOF
+)"
+if [ -n "$FONTS" ]; then
+  echo
+  echo "registered fonts (restart apps to use them):"
+  echo "$FONTS" | sed 's/^/  /'
+fi
 
 # Make fish the login shell (https://fishshell.com/docs/current/#default-shell)
 FISH="$(command -v fish || true)"

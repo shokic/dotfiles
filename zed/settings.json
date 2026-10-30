@@ -3,10 +3,12 @@
 // Docs: https://zed.dev/docs/configuring-zed
 {
   // ── Fonts & theme ────────────────────────────────────────────────
-  // Editor font; the terminal uses it too. The interface keeps Zed's default font.
-  "cli_default_open_behavior": "new_window",
+  // Editor font; the terminal uses it too
   "buffer_font_family": "MonoLisa",
   "buffer_font_size": 16,
+  // Interface font (installed by the Brewfile). Looks large at the default 16.
+  "ui_font_family": "Geist",
+  "ui_font_size": 15,
   "icon_theme": "Base Charmed Icons",
 
   // ── Editor ───────────────────────────────────────────────────────
@@ -22,6 +24,8 @@
   },
   "file_finder": { "modal_max_width": "xlarge" },
   "diff_view_style": "unified",
+  // `zed <folder>` from the terminal opens a new window instead of reusing one
+  "cli_default_open_behavior": "new_window",
 
   // ── Layout: all panels on the left, no tab bar ───────────────────
   "tab_bar": { "show": false },
@@ -67,6 +71,13 @@
         "javascript": { "updateImportsOnFileMove": { "enabled": "always" } },
       },
     },
+  },
+
+  // ── Extensions ───────────────────────────────────────────────────
+  // Installed automatically when missing (html comes installed by default)
+  "auto_install_extensions": {
+    "charmed-icons": true,
+    "fish": true,
   },
 
   // ── AI ───────────────────────────────────────────────────────────

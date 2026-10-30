@@ -15,6 +15,8 @@ brew bundle --file Brewfile
 
 Run `./setup.sh` again after any change. It only updates what's different.
 
+Fonts that can't be shared (MonoLisa) aren't in this repo: put them in `iCloud Drive/fonts/`, and `setup.sh` installs them.
+
 ## Removing things
 
 ```bash
@@ -28,7 +30,7 @@ brew bundle cleanup --force --zap   # uninstall it, with its settings and caches
 
 ## Files
 
-- `fish/`, `ghostty/`, `zed.settings.jsonc`: app configs, linked into `~/.config`
+- `fish/`, `ghostty/`, `zed/`: app configs, linked into `~/.config`
 - `Brewfile`: apps and tools from Homebrew
 - `macos.sh`: macOS settings (trackpad, keyboard, Dock, Finder…)
 - `tools.sh`: tools installed with curl
