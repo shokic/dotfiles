@@ -10,7 +10,7 @@
 # Stop on errors, unset variables, and failures inside pipes
 set -euo pipefail
 
-TOOLS="claude viteplus herdr rex aws"
+TOOLS="claude viteplus herdr rex aws ssm"
 
 # Delete each path given, saying so
 remove() {
@@ -71,6 +71,25 @@ install_dmg() (
   echo "installed /Applications/$(basename "$app")"
 )
 
+# Install the macOS installer package at URL $1, system-wide (asks for your password). Only if Apple
+# notarized it and it's signed by developer team $2, so a different package served from that URL never
+# gets installed. Runs in a subshell (parentheses) so the cleanup trap only applies here.
+install_pkg() (
+  tmp="$(mktemp -d)"
+  trap 'rm -rf "$tmp"' EXIT
+  curl -fsSL -o "$tmp/installer.pkg" "$1"
+  if ! spctl --assess --type install "$tmp/installer.pkg" 2>/dev/null; then
+    echo "⚠️  $1 isn't notarized by Apple: not installed"
+    exit 1
+  fi
+  team="$(pkgutil --check-signature "$tmp/installer.pkg" | sed -n 's/.*Developer ID Installer: .*(\([A-Z0-9]*\))$/\1/p')"
+  if [ "$team" != "$2" ]; then
+    echo "⚠️  $1 is signed by team ${team:-none}, not $2: not installed"
+    exit 1
+  fi
+  sudo installer -pkg "$tmp/installer.pkg" -target /
+)
+
 ## Claude Code
 
 claude_installed() { [ -e ~/.local/bin/claude ]; }
@@ -124,6 +143,22 @@ aws_install() { curl -fsSL https://awscli.amazonaws.com/v2/install.sh | bash; }
 aws_uninstall() {
   remove ~/.local/bin/aws ~/.local/bin/aws_completer ~/.local/share/aws-cli
   keep ~/.aws
+}
+
+## Session Manager plugin for the AWS CLI (`aws ssm start-session`), from AWS's signed .pkg.
+# Doesn't update itself: uninstall and re-install it to get the latest version.
+
+ssm_installed() { [ -e /usr/local/sessionmanagerplugin/bin/session-manager-plugin ]; }
+ssm_install() {
+  install_pkg https://s3.amazonaws.com/session-manager-downloads/plugin/latest/mac_arm64/session-manager-plugin.pkg 94KV3E626L
+  sudo mkdir -p /usr/local/bin
+  sudo ln -sf /usr/local/sessionmanagerplugin/bin/session-manager-plugin /usr/local/bin/session-manager-plugin
+}
+ssm_uninstall() {
+  sudo rm -rf /usr/local/sessionmanagerplugin /usr/local/bin/session-manager-plugin \
+    /Library/LaunchDaemons/SessionManagerPlugin.plist
+  sudo pkgutil --forget session-manager-plugin > /dev/null 2>&1 || true
+  echo "removed /usr/local/sessionmanagerplugin and /usr/local/bin/session-manager-plugin"
 }
 
 ## Run
