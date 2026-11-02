@@ -10,7 +10,7 @@
 # Stop on errors, unset variables, and failures inside pipes
 set -euo pipefail
 
-TOOLS="claude viteplus herdr rex"
+TOOLS="claude viteplus herdr rex aws"
 
 # Delete each path given, saying so
 remove() {
@@ -115,6 +115,15 @@ rex_uninstall() {
   remove "$(app_path com.superlogical.rex)"
   keep ~/Library/Preferences/com.superlogical.rex.plist \
     ~/Library/"Application Support"/com.superlogical.rex ~/Library/Caches/com.superlogical.rex
+}
+
+## AWS CLI (updates with `aws update`)
+
+aws_installed() { [ -e ~/.local/bin/aws ]; }
+aws_install() { curl -fsSL https://awscli.amazonaws.com/v2/install.sh | bash; }
+aws_uninstall() {
+  remove ~/.local/bin/aws ~/.local/bin/aws_completer ~/.local/share/aws-cli
+  keep ~/.aws
 }
 
 ## Run
