@@ -1,5 +1,7 @@
 # Left prompt, on two lines, after a blank line (except on the first prompt):
-#   ~/c/dotfiles main · 2 changed  4.2s     folder, git status (see __prompt_git), last command's duration
+#   ~/c/dotfiles main · 2 changed  aws dev-as-dev  4.2s
+#                                            folder, git status (see __prompt_git), assumed AWS profile
+#                                            (see __prompt_aws), last command's duration
 #   ❯                                        green, or red if the last command failed
 # Once a command is run, it's redrawn as just a grey "❯" (see conf.d/prompt.fish).
 function fish_prompt
@@ -19,6 +21,7 @@ function fish_prompt
     set_color blue
     echo -n (prompt_pwd)
     __prompt_git
+    __prompt_aws
     set_color brblack
     if set -q __prompt_duration
         echo -n '  '(__prompt_format_duration $__prompt_duration)
