@@ -5,7 +5,7 @@ My dev environment setup.
 ## Setup
 
 ```bash
-# 1. Install Homebrew: https://brew.sh
+# 1. Install Homebrew (https://brew.sh), and run the commands it prints to add it to your PATH
 # 2. Clone and install
 git clone https://github.com/shokic/dotfiles.git ~/code/dotfiles
 cd ~/code/dotfiles

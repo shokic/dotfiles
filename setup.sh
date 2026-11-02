@@ -6,6 +6,9 @@
 # Stop on errors, unset variables, and failures inside pipes
 set -euo pipefail
 
+# Find Homebrew's tools (fish...) even when Homebrew isn't in this shell's PATH yet, as on a fresh Mac
+if [ -x /opt/homebrew/bin/brew ]; then eval "$(/opt/homebrew/bin/brew shellenv)"; fi
+
 # Absolute path to this repo, wherever it's cloned
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 
@@ -100,8 +103,12 @@ link "$DOTFILES/Brewfile" ~/.config/Brewfile
 # macOS preferences: trackpad, keyboard, Dock, Finder...
 "$DOTFILES/macos.sh"
 
-# Tools installed with curl instead of Homebrew
-"$DOTFILES/tools.sh"
+# Tools installed with curl or a .dmg instead of Homebrew.
+# A failed download (server down, no network) only warns, so the rest of the setup still runs.
+if ! "$DOTFILES/tools.sh"; then
+  echo
+  echo "⚠️  a tool didn't install (see above): re-run ./setup.sh later to install the rest"
+fi
 
 # Fonts that can't be shared (MonoLisa) aren't in this public repo, so they're kept in iCloud Drive, in a
 # fonts/ folder. Copy the ones missing from ~/Library/Fonts.
