@@ -31,6 +31,7 @@ brew bundle cleanup --force --zap   # uninstall it, with its settings and caches
 ## Files
 
 - `fish/`, `ghostty/`, `zed/`, `rex/`: app configs, linked into `~/.config`
+- `raycast/`: Raycast script commands (Keep Awake, Keep Running). Add the folder once in Raycast: Settings → Extensions → + → Add Script Directory
 - `Brewfile`: apps and tools from Homebrew
 - `macos.sh`: macOS settings (trackpad, keyboard, Dock, Finder…)
 - `tools.sh`: tools installed with curl

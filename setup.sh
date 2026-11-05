@@ -178,6 +178,27 @@ elif [ "$(dscl . -read ~/ UserShell | awk '{print $2}')" != "$FISH" ]; then
   echo "default shell set to $FISH (applies to new terminal windows)"
 fi
 
+# Raycast "Keep Running" (raycast/keep-running.sh): allow turning sleep off and on without a password,
+# as Raycast can't ask for one. Only these two exact commands, nothing else runs as root.
+# Checked by existence: the file itself is only readable by root.
+SUDOERS=/etc/sudoers.d/keep-running
+if [ ! -f "$SUDOERS" ]; then
+  if [ -z "$HAS_TTY" ]; then
+    echo "skipped $SUDOERS (no terminal to ask for the sudo password)"
+  else
+    echo
+    echo "allowing Raycast's Keep Running to change sleep settings (needs sudo)"
+    tmp="$(mktemp)"
+    echo "$(whoami) ALL=(root) NOPASSWD: /usr/bin/pmset -a disablesleep 0, /usr/bin/pmset -a disablesleep 1" > "$tmp"
+    # visudo checks the syntax first: a broken sudoers file could lock sudo out entirely
+    if sudo visudo -cqf "$tmp"; then
+      sudo install -m 0440 -o root -g wheel "$tmp" "$SUDOERS"
+      echo "added $SUDOERS"
+    fi
+    rm -f "$tmp"
+  fi
+fi
+
 # granted's `assume`: also save the SSO login to ~/.aws/sso/cache, not only the Keychain.
 # AWS SDKs ignore the credentials assume exports when AWS_PROFILE is set, and read that cache instead,
 # so without this they fail with "Token is expired" until `aws sso login` is run.
