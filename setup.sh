@@ -178,6 +178,14 @@ elif [ "$(dscl . -read ~/ UserShell | awk '{print $2}')" != "$FISH" ]; then
   echo "default shell set to $FISH (applies to new terminal windows)"
 fi
 
+# granted's `assume`: also save the SSO login to ~/.aws/sso/cache, not only the Keychain.
+# AWS SDKs ignore the credentials assume exports when AWS_PROFILE is set, and read that cache instead,
+# so without this they fail with "Token is expired" until `aws sso login` is run.
+if command -v granted > /dev/null && ! grep -qx 'ExportSSOToken = true' ~/.granted/config 2>/dev/null; then
+  granted settings set -s ExportSSOToken -v true
+  echo "granted: SSO logins are now also saved for the AWS CLI and SDKs"
+fi
+
 # Install or remove fish plugins so they match fish/fish_plugins.
 # Only when the lists differ: `fisher update` re-downloads every plugin.
 if [ -n "$FISH" ] && ! "$FISH" <<'EOF'
