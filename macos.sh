@@ -179,6 +179,10 @@ pref com.apple.screencapture disable-shadow -bool true
 # No gaps between windows tiled side by side
 pref com.apple.WindowManager EnableTiledWindowMargins -bool false
 
+# No widgets on the desktop, with or without Stage Manager (hidden, not deleted)
+pref com.apple.WindowManager StandardHideWidgets -bool true
+pref com.apple.WindowManager StageManagerHideWidgets -bool true
+
 ## Apply
 
 if [ -n "$RESTART_DOCK" ]; then killall Dock; fi
