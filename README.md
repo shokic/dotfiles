@@ -16,7 +16,7 @@ brew bundle --file Brewfile
 
 Run `./setup.sh` again after any change. It only updates what's different.
 
-On the first run, `setup.sh` also sets up GitHub: it creates an SSH key if there's none (`~/.ssh/id_ed25519`, no passphrase), logs `gh` in through the browser, adds the key to your GitHub account to push over SSH and to sign commits, and switches this repo's remote to SSH.
+On the first run, `setup.sh` also sets up GitHub: it creates an SSH key if there's none (`~/.ssh/id_ed25519`, no passphrase), logs `gh` in through the browser, adds the key to your GitHub account to push over SSH and to sign commits, installs the gh extensions ([gh-stack](https://github.com/github/gh-stack) for stacked PRs), and switches this repo's remote to SSH.
 
 Fonts that can't be shared (MonoLisa) aren't in this repo: put them in `iCloud Drive/fonts/`, and `setup.sh` installs them.
 

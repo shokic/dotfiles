@@ -206,6 +206,13 @@ else
     fi
   fi
 
+  # gh extensions. gh-stack: stacked branches and PRs (gh stack). Update with `gh extension upgrade --all`
+  for ext in github/gh-stack; do
+    if ! gh extension list 2>/dev/null | grep -q "$ext"; then
+      gh extension install "$ext" || echo "⚠️  couldn't install the gh extension $ext"
+    fi
+  done
+
   # The README clones this repo over HTTPS (there's no SSH key yet on a fresh Mac). Switch it to SSH
   # now that the key is on GitHub, so pushes use the key too.
   ORIGIN="$(git -C "$DOTFILES" remote get-url origin 2>/dev/null || true)"
