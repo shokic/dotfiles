@@ -1,4 +1,108 @@
 // Zed keyboard shortcuts, on top of the defaults.
 // Shortcuts added from Zed's keymap editor (cmd-k cmd-s) are saved here.
 // Docs: https://zed.dev/docs/key-bindings
-[]
+// To see the default key bindings, run `zed: open default keymap` from the command palette.
+[
+  {
+    "context": "Editor",
+    "bindings": {
+      "cmd-l": "tab_switcher::Toggle",
+    },
+  },
+  {
+    "context": "TabSwitcher",
+    "bindings": {
+      "cmd-l": "menu::SelectNext",
+    },
+  },
+  {
+    "context": "(Editor && !AgentPanel && vim_mode == normal)",
+    "bindings": {
+      "space r n": "editor::SpawnNearestTask",
+      "space r a": [
+        "task::Rerun",
+        {
+          "reevaluate_context": false,
+        },
+      ],
+    },
+  },
+  {
+    "context": "ProjectPanel && !editing",
+    "bindings": {
+      "a": "project_panel::NewFile",
+      "d": "project_panel::NewDirectory",
+      "x": "project_panel::Delete",
+      "r": "project_panel::Rename",
+    },
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "g shift-g": "git_panel::ToggleFocus",
+    },
+  },
+  {
+    "context": "Workspace",
+    "unbind": {
+      "ctrl-shift-g": "git_panel::ToggleFocus",
+    },
+  },
+  {
+    "bindings": {
+      "g shift-t": "workspace::NewCenterTerminal",
+    },
+  },
+  {
+    "context": "vim_mode == normal || vim_mode == visual",
+    "bindings": {
+      "g w": "vim::HelixJumpToWord",
+    },
+  },
+  {
+    "bindings": {
+      "g f": "text_finder::Toggle",
+    },
+  },
+  {
+    "bindings": {
+      "cmd-k l": "editor::CopyFileLocation"
+    }
+  },
+  {
+    "context": "GitPanel && ChangesList && !GitBranchSelector && !GitRepositorySelector",
+    "bindings": {
+      "cmd-k r p": "workspace::CopyRelativePath"
+    }
+  },
+  {
+    "context": "GitPanel && ChangesList && !GitBranchSelector && !GitRepositorySelector",
+    "unbind": {
+      "alt-cmd-shift-c": "workspace::CopyRelativePath"
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "cmd-k r p": "workspace::CopyRelativePath"
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "unbind": {
+      "alt-cmd-shift-c": "workspace::CopyRelativePath"
+    }
+  },
+  {
+    "context": "OutlinePanel && not_editing",
+    "bindings": {
+      "cmd-k r p": "workspace::CopyRelativePath"
+    }
+  },
+  {
+    "context": "OutlinePanel && not_editing",
+    "unbind": {
+      "alt-cmd-shift-c": "workspace::CopyRelativePath"
+    }
+  }
+]
