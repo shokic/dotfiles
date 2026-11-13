@@ -6,8 +6,8 @@
   // Editor font; the terminal uses it too
   "buffer_font_family": "MonoLisa",
   "buffer_font_size": 16,
-  // Interface font (installed by the Brewfile). Looks large at the default 16.
-  "ui_font_family": "Geist",
+  // Interface font: Zed's built-in default, currently IBM Plex Sans. Looks large at the default 16.
+  "ui_font_family": ".ZedSans",
   "ui_font_size": 15,
   "icon_theme": "Base Charmed Icons",
 
