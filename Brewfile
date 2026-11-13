@@ -30,7 +30,6 @@ cask "orbstack"
 cask "visual-studio-code"
 cask "raycast"
 cask "homebrew-app"
-cask "google-chrome"
 cask "helium-browser"
 cask "anomalyco/tap/hex"
 
