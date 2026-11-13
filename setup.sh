@@ -93,6 +93,94 @@ link "$DOTFILES/ghostty/config" ~/.config/ghostty/config
 
 link "$DOTFILES/rex/init.lua" ~/.config/rex/init.lua
 
+# git: name, email, and the rest of the settings
+link "$DOTFILES/git/.gitconfig" ~/.gitconfig
+
+# SSH key: git uses it to reach GitHub and to sign commits and tags (see git/.gitconfig).
+# No passphrase, so nothing has to be unlocked.
+SSH_KEY=~/.ssh/id_ed25519
+GIT_EMAIL="$(git config --file "$DOTFILES/git/.gitconfig" user.email)"
+if [ ! -f "$SSH_KEY" ]; then
+  mkdir -p ~/.ssh && chmod 700 ~/.ssh
+  ssh-keygen -q -t ed25519 -N "" -C "$GIT_EMAIL" -f "$SSH_KEY"
+  echo "created SSH key $SSH_KEY"
+fi
+
+# Trust that key's signatures for the git email, so git log --show-signature can check them here
+mkdir -p ~/.config/git
+SIGNER="$GIT_EMAIL $(cut -d' ' -f1,2 "$SSH_KEY.pub")"
+if [ "$(cat ~/.config/git/allowed_signers 2>/dev/null)" != "$SIGNER" ]; then
+  echo "$SIGNER" > ~/.config/git/allowed_signers
+  echo "wrote ~/.config/git/allowed_signers"
+fi
+
+# GitHub: log gh in, and add the key to the account twice: to push and pull over SSH
+# ("authentication"), and to show signed commits as Verified ("signing").
+# Each step only runs when needed, so re-runs don't touch GitHub beyond a check.
+GH_SCOPES="admin:public_key,admin:ssh_signing_key"   # what adding both kinds of keys needs
+if ! command -v gh > /dev/null; then
+  echo
+  echo "gh isn't installed yet: run \`brew bundle\` here, then re-run ./setup.sh to set up GitHub"
+elif [ -z "$HAS_TTY" ]; then
+  echo
+  echo "⚠️  no terminal to log in to GitHub from: re-run ./setup.sh in a terminal"
+else
+  if ! gh auth status -h github.com > /dev/null 2>&1; then
+    echo
+    echo "logging in to GitHub (opens the browser)"
+    # --skip-ssh-key: the keys are added below, with this Mac's name as their title.
+    # -p ssh: git (and gh clone) reach GitHub over SSH.
+    gh auth login -h github.com -w -p ssh --skip-ssh-key -s "$GH_SCOPES" < /dev/tty
+  else
+    # Logged in before this script asked for these scopes: ask for the missing ones
+    MISSING=""
+    for s in ${GH_SCOPES//,/ }; do
+      gh auth status -h github.com 2>&1 | grep -q "'$s'" || MISSING=1
+    done
+    if [ -n "$MISSING" ]; then
+      echo
+      echo "gh needs more access to add SSH keys (opens the browser)"
+      gh auth refresh -h github.com -s "$GH_SCOPES" < /dev/tty
+    fi
+  fi
+
+  # The key without its comment, as GitHub lists it
+  PUBKEY="$(cut -d' ' -f1,2 "$SSH_KEY.pub")"
+  KEYS="$(gh ssh-key list 2>/dev/null || true)"
+  ADDED=""
+  for type in authentication signing; do
+    # gh ssh-key list: one key per line, tab-separated, with the key and its type as separate fields
+    if ! echo "$KEYS" | awk -F'\t' -v k="$PUBKEY" -v t="$type" '
+        { has_k = 0; has_t = 0; for (i = 1; i <= NF; i++) { if ($i == k) has_k = 1; if ($i == t) has_t = 1 } }
+        has_k && has_t { found = 1 } END { exit !found }'; then
+      if gh ssh-key add "$SSH_KEY.pub" --type "$type" --title "$(scutil --get ComputerName)"; then
+        ADDED=1
+      else
+        echo "⚠️  couldn't add the SSH key to GitHub as a $type key"
+      fi
+    fi
+  done
+
+  # Check that GitHub accepts the key (accept-new: trust GitHub's host key the first time)
+  if [ -n "$ADDED" ]; then
+    if ssh -T -o StrictHostKeyChecking=accept-new git@github.com 2>&1 | grep -q "successfully authenticated"; then
+      echo "GitHub accepts the SSH key"
+    else
+      echo "⚠️  GitHub doesn't accept the SSH key yet: check with ssh -T git@github.com"
+    fi
+  fi
+
+  # The README clones this repo over HTTPS (there's no SSH key yet on a fresh Mac). Switch it to SSH
+  # now that the key is on GitHub, so pushes use the key too.
+  ORIGIN="$(git -C "$DOTFILES" remote get-url origin 2>/dev/null || true)"
+  if [[ "$ORIGIN" == https://github.com/* ]] &&
+     ssh -T -o StrictHostKeyChecking=accept-new git@github.com 2>&1 | grep -q "successfully authenticated"; then
+    SSH_ORIGIN="git@github.com:${ORIGIN#https://github.com/}"
+    git -C "$DOTFILES" remote set-url origin "$SSH_ORIGIN"
+    echo "dotfiles remote now uses SSH: $SSH_ORIGIN"
+  fi
+fi
+
 # Zed: file by file, so Zed can keep its own files (prompts, themes) next to them
 link "$DOTFILES/zed/settings.json" ~/.config/zed/settings.json
 link "$DOTFILES/zed/keymap.json" ~/.config/zed/keymap.json

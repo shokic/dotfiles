@@ -1,0 +1,79 @@
+# Linked to ~/.gitconfig by setup.sh
+[user]
+	name = shokic
+	email = shokipsh@gmail.com
+	# Signs commits and tags with the SSH key (GitHub shows them as Verified once it's added there as a signing key)
+	signingKey = ~/.ssh/id_ed25519.pub
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	# Keys trusted when checking signatures locally (git log --show-signature). Written by setup.sh
+	allowedSignersFile = ~/.config/git/allowed_signers
+
+[init]
+	defaultBranch = main
+
+[core]
+	# Commit messages and interactive rebases open in Zed; git waits until the tab is closed
+	editor = zed --wait
+
+[commit]
+	# Show the diff below the message being written
+	verbose = true
+	gpgSign = true
+
+[push]
+	# `git push` on a new branch creates it on origin, without needing -u
+	autoSetupRemote = true
+
+[fetch]
+	# Remove origin/* references to branches deleted on the remote (local branches are kept)
+	prune = true
+
+[pull]
+	# Rebase local commits on top of what was pulled, instead of making a merge commit
+	rebase = true
+
+[rebase]
+	# Stash uncommitted changes before a rebase, and restore them after
+	autoStash = true
+	# Move the branches stacked on the rebased one too
+	updateRefs = true
+
+[merge]
+	# Conflict markers also show the original version, between ||||||| and =======
+	conflictStyle = zdiff3
+
+# Remember how a merge conflict was resolved, and reuse it when the same conflict comes back
+[rerere]
+	enabled = true
+	# Stage the reused resolution too
+	autoUpdate = true
+
+[diff]
+	# Clearer diffs when code is moved or reordered
+	algorithm = histogram
+
+[branch]
+	# Most recently used branches first
+	sort = -committerdate
+
+[tag]
+	# v1.10 after v1.9
+	sort = version:refname
+	gpgSign = true
+
+[column]
+	# List branches and tags in columns
+	ui = auto
+
+[help]
+	# A mistyped command asks to run the closest one
+	autocorrect = prompt
+
+[alias]
+	# Delete local branches whose remote branch is gone (e.g. merged and deleted on GitHub).
+	# -d refuses branches with unmerged commits, including squash- or rebase-merged PRs: check those, then git branch -D
+	gone = "!git fetch --prune && git for-each-ref --format='%(refname:short) %(upstream:track)' refs/heads | awk '$2 == \"[gone]\" { print $1 }' | while read -r b; do git branch -d \"$b\"; done"

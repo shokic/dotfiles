@@ -15,6 +15,8 @@ brew bundle --file Brewfile
 
 Run `./setup.sh` again after any change. It only updates what's different.
 
+On the first run, `setup.sh` also sets up GitHub: it creates an SSH key if there's none (`~/.ssh/id_ed25519`, no passphrase), logs `gh` in through the browser, adds the key to your GitHub account to push over SSH and to sign commits, and switches this repo's remote to SSH.
+
 Fonts that can't be shared (MonoLisa) aren't in this repo: put them in `iCloud Drive/fonts/`, and `setup.sh` installs them.
 
 ## Removing things
@@ -31,6 +33,7 @@ brew bundle cleanup --force --zap   # uninstall it, with its settings and caches
 ## Files
 
 - `fish/`, `ghostty/`, `zed/`, `rex/`: app configs, linked into `~/.config`
+- `git/.gitconfig`: git settings (name, email, pull/rebase/merge behavior, the `git gone` alias), linked to `~/.gitconfig`
 - `raycast/`: Raycast script commands (Keep Awake, Keep Running). Add the folder once in Raycast: Settings → Extensions → + → Add Script Directory
 - `Brewfile`: apps and tools from Homebrew
 - `macos.sh`: macOS settings (trackpad, keyboard, Dock, Finder…)
