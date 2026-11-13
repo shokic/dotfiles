@@ -10,7 +10,15 @@
 # Stop on errors, unset variables, and failures inside pipes
 set -euo pipefail
 
-TOOLS="claude viteplus herdr rex aws ssm"
+# Installed on every Mac
+TOOLS="claude viteplus herdr rex"
+# Only on a work Mac (profile chosen by setup.sh)
+WORK_TOOLS="aws ssm"
+if [ "$(cat ~/.config/dotfiles/profile 2>/dev/null || true)" = work ]; then
+  INSTALL="$TOOLS $WORK_TOOLS"
+else
+  INSTALL="$TOOLS"
+fi
 
 # Delete each path given, saying so
 remove() {
@@ -165,9 +173,9 @@ ssm_uninstall() {
 
 if [ "${1:-}" = uninstall ]; then
   tool="${2:-}"
-  case " $TOOLS " in
+  case " $TOOLS $WORK_TOOLS " in
     *" $tool "*) ;;
-    *) echo "usage: ./tools.sh uninstall <$(echo $TOOLS | tr ' ' '|')>"; exit 1 ;;
+    *) echo "usage: ./tools.sh uninstall <$(echo $TOOLS $WORK_TOOLS | tr ' ' '|')>"; exit 1 ;;
   esac
   if ! "${tool}_installed"; then
     echo "$tool isn't installed"
@@ -185,11 +193,11 @@ if [ "${1:-}" = uninstall ]; then
   esac
   "${tool}_uninstall"
   echo
-  echo "$tool uninstalled: remove it from TOOLS in tools.sh, or setup.sh will install it again"
+  echo "$tool uninstalled: remove it from TOOLS or WORK_TOOLS in tools.sh, or setup.sh will install it again"
   exit 0
 fi
 
-for tool in $TOOLS; do
+for tool in $INSTALL; do
   if ! "${tool}_installed"; then
     echo
     echo "installing $tool"

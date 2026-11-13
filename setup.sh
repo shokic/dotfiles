@@ -1,6 +1,9 @@
 #!/bin/bash
 # Sets up this Mac from the repo: symlinks the configs into ~/.config, applies the macOS
-# settings (macos.sh), installs the curl tools (tools.sh), registers fonts, and sets up fish.
+# settings (macos.sh), installs the curl tools (tools.sh), registers fonts, sets up fish,
+# then runs what only this Mac's profile needs (profiles/<profile>/setup.sh).
+#
+#   ./setup.sh [work|personal]    the profile is asked on the first run, then remembered
 # Safe to re-run: only what's out of date changes, and existing files are only replaced after asking.
 
 # Stop on errors, unset variables, and failures inside pipes
@@ -18,6 +21,39 @@ if (exec < /dev/tty) 2>/dev/null; then HAS_TTY=1; fi
 
 # Set when anything changes, to suggest reloading the shell at the end
 CHANGED=""
+
+# Profile: what differs between a work and a personal Mac (profiles/<profile>/, the Brewfile,
+# tools.sh). Asked on the first run and saved for the next ones; `./setup.sh <profile>` changes it.
+PROFILE_FILE=~/.config/dotfiles/profile
+PROFILE="${1:-$(cat "$PROFILE_FILE" 2>/dev/null || true)}"
+if [ -z "$PROFILE" ] && [ -n "$HAS_TTY" ]; then
+  read -r -p "Is this a work or a personal Mac? [work/personal] " PROFILE < /dev/tty || PROFILE=""
+fi
+case "$PROFILE" in
+  work|personal) ;;
+  *) echo "usage: ./setup.sh [work|personal] (the profile is only needed on the first run)"; exit 1 ;;
+esac
+if [ "$(cat "$PROFILE_FILE" 2>/dev/null || true)" != "$PROFILE" ]; then
+  mkdir -p "$(dirname "$PROFILE_FILE")"
+  echo "$PROFILE" > "$PROFILE_FILE"
+  echo "profile: $PROFILE (saved in $PROFILE_FILE)"
+fi
+
+# iCloud Drive, for the files that can't be in this public repo (fonts, work configs)
+ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
+
+# Make sure the iCloud Drive file $1 is on this Mac. If iCloud only kept it online ("dataless"),
+# cp fails on it instead of downloading it, so ask iCloud to download it, and wait up to a minute.
+# Fails if it's still not there.
+icloud_download() {
+  stat -f '%Sf' "$1" | grep -q dataless || return 0
+  brctl download "$1" > /dev/null 2>&1 || true
+  for _ in $(seq 60); do
+    stat -f '%Sf' "$1" | grep -q dataless || return 0
+    sleep 1
+  done
+  return 1
+}
 
 # Print what's currently at $1 so it can be checked before overwriting
 show() {
@@ -201,24 +237,15 @@ fi
 # Fonts that can't be shared (MonoLisa) aren't in this public repo, so they're kept in iCloud Drive, in a
 # fonts/ folder. Copy the ones missing from ~/Library/Fonts.
 # Problems only warn: a missing font shouldn't stop the rest of the setup.
-ICLOUD_FONTS="$HOME/Library/Mobile Documents/com~apple~CloudDocs/fonts"
+ICLOUD_FONTS="$ICLOUD/fonts"
 if [ -d "$ICLOUD_FONTS" ]; then
   while IFS= read -r -d '' f; do
     dest=~/Library/Fonts/"$(basename "$f")"
     # -s, not -e: an empty file is left over from a failed copy, so copy it again
     [ -s "$dest" ] && continue
-    # If iCloud only kept the file online ("dataless"), cp doesn't download it: it fails and
-    # leaves an empty file. So ask iCloud to download it first, and wait up to a minute.
-    if stat -f '%Sf' "$f" | grep -q dataless; then
-      brctl download "$f" > /dev/null 2>&1 || true
-      for _ in $(seq 60); do
-        stat -f '%Sf' "$f" | grep -q dataless || break
-        sleep 1
-      done
-      if stat -f '%Sf' "$f" | grep -q dataless; then
-        echo "⚠️  couldn't download font $f from iCloud Drive: download it in Finder and re-run"
-        continue
-      fi
+    if ! icloud_download "$f"; then
+      echo "⚠️  couldn't download font $f from iCloud Drive: download it in Finder and re-run"
+      continue
     fi
     mkdir -p ~/Library/Fonts
     if cp "$f" "$dest" && [ -s "$dest" ]; then
@@ -302,12 +329,9 @@ if [ ! -f "$SUDOERS" ]; then
   fi
 fi
 
-# granted's `assume`: also save the SSO login to ~/.aws/sso/cache, not only the Keychain.
-# AWS SDKs ignore the credentials assume exports when AWS_PROFILE is set, and read that cache instead,
-# so without this they fail with "Token is expired" until `aws sso login` is run.
-if command -v granted > /dev/null && ! grep -qx 'ExportSSOToken = true' ~/.granted/config 2>/dev/null; then
-  granted settings set -s ExportSSOToken -v true
-  echo "granted: SSO logins are now also saved for the AWS CLI and SDKs"
+# What only this profile needs. Sourced, not run, so it can use link, icloud_download, HAS_TTY...
+if [ -f "$DOTFILES/profiles/$PROFILE/setup.sh" ]; then
+  . "$DOTFILES/profiles/$PROFILE/setup.sh"
 fi
 
 # Install or remove fish plugins so they match fish/fish_plugins.

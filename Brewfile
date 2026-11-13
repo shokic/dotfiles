@@ -1,4 +1,7 @@
-tap "common-fate/granted"
+profile_file = File.expand_path("~/.config/dotfiles/profile")
+abort "no profile chosen yet: run ./setup.sh first" unless File.exist?(profile_file)
+profile = File.read(profile_file).strip
+
 tap "oven-sh/bun"
 tap "anomalyco/tap"
 brew "bat"
@@ -16,24 +19,28 @@ brew "fzf"
 brew "gh"
 brew "git"
 brew "herdr"
-brew "k6"
-brew "libpq"
 brew "ripgrep"
 brew "zoxide"
-brew "common-fate/granted/granted", trusted: true
 cask "zed"
 cask "ghostty"
 cask "appcleaner"
-cask "datagrip"
 cask "iina"
 cask "figma"
 cask "orbstack"
 cask "visual-studio-code"
 cask "raycast"
-cask "slack"
 cask "homebrew-app"
-cask "notion"
 cask "google-chrome"
 cask "helium-browser"
 cask "anomalyco/tap/hex"
-cask "postman"
+
+if profile == "work"
+  tap "common-fate/granted"
+  brew "common-fate/granted/granted", trusted: true
+  brew "k6"
+  brew "libpq"
+  cask "datagrip"
+  cask "postman"
+  cask "slack"
+  cask "notion"
+end
