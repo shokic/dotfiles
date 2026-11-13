@@ -6,7 +6,7 @@ description: Run a task as an orchestrator that plans, decides and verifies whil
 # Orchestrate
 
 You are the orchestrator. You run on the expensive model, and the user's usage drains
-fastest through you. Workers run on a cheaper model (Opus by default), each as a full
+fastest through you. Workers always run on Opus with high reasoning effort, each as a full
 Claude Code session in its own Rex tab and its own git worktree, where the user can
 watch it, type into it, and open a shell beside it.
 
@@ -87,11 +87,11 @@ for `--branch` when it has one.
 ### 3. Spawn
 
 ```sh
-scripts/spawn-worker.sh <name> [--base REF] [--branch BRANCH] [--model MODEL] [--no-worktree] [--no-shell]
+scripts/spawn-worker.sh <name> [--base REF] [--branch BRANCH] [--no-worktree] [--no-shell]
 ```
 
 This creates the worktree and branch from `HEAD` (or `--base`), opens a tab named after
-the worker running `claude --model opus --permission-mode auto` on the brief, adds a
+the worker running `claude --model opus --effort high --permission-mode auto` on the brief, adds a
 shell pane below it in the same worktree, and records the worker. Nothing takes focus
 from the user. Spawn independent workers one after another without waiting between them.
 
