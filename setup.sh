@@ -116,21 +116,36 @@ fi
 ICLOUD_FONTS="$HOME/Library/Mobile Documents/com~apple~CloudDocs/fonts"
 if [ -d "$ICLOUD_FONTS" ]; then
   while IFS= read -r -d '' f; do
-    if [ ! -e ~/Library/Fonts/"$(basename "$f")" ]; then
-      mkdir -p ~/Library/Fonts
-      # Reading the file also downloads it, if iCloud only kept it online
-      if cp "$f" ~/Library/Fonts/; then
-        echo "copied font $(basename "$f") from iCloud Drive"
-      else
-        echo "⚠️  couldn't copy font $f"
+    dest=~/Library/Fonts/"$(basename "$f")"
+    # -s, not -e: an empty file is left over from a failed copy, so copy it again
+    [ -s "$dest" ] && continue
+    # If iCloud only kept the file online ("dataless"), cp doesn't download it: it fails and
+    # leaves an empty file. So ask iCloud to download it first, and wait up to a minute.
+    if stat -f '%Sf' "$f" | grep -q dataless; then
+      brctl download "$f" > /dev/null 2>&1 || true
+      for _ in $(seq 60); do
+        stat -f '%Sf' "$f" | grep -q dataless || break
+        sleep 1
+      done
+      if stat -f '%Sf' "$f" | grep -q dataless; then
+        echo "⚠️  couldn't download font $f from iCloud Drive: download it in Finder and re-run"
+        continue
       fi
+    fi
+    mkdir -p ~/Library/Fonts
+    if cp "$f" "$dest" && [ -s "$dest" ]; then
+      echo "copied font $(basename "$f") from iCloud Drive"
+    else
+      rm -f "$dest"
+      echo "⚠️  couldn't copy font $f"
     fi
   done < <(find "$ICLOUD_FONTS" -type f \( -iname '*.otf' -o -iname '*.ttf' -o -iname '*.otc' -o -iname '*.ttc' \) -print0)
 fi
 
 # Zed's code font: without it, Zed silently falls back to another font.
 # Also covers Macs without the iCloud folder, unless MonoLisa was installed by hand.
-if ! ls ~/Library/Fonts/MonoLisa* > /dev/null 2>&1; then
+# Only non-empty files count: an empty one is left over from a failed copy.
+if [ -z "$(find ~/Library/Fonts -maxdepth 1 -name 'MonoLisa*' -size +0 2>/dev/null)" ]; then
   echo
   echo "⚠️  MonoLisa isn't installed: add it to iCloud Drive/fonts/ and re-run, or install it by hand"
 fi
