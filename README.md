@@ -45,6 +45,7 @@ brew bundle cleanup --force --zap   # uninstall it, with its settings and caches
 ## Files
 
 - `fish/`, `ghostty/`, `zed/`, `rex/`: app configs, linked into `~/.config`
+- `skills/`: my Claude Code skills, each linked into `~/.claude/skills` (`orchestrate`: an orchestrator that runs cheaper Claude workers in Rex tabs and git worktrees)
 - `git/.gitconfig`: git settings (name, email, pull/rebase/merge behavior, the `git gone` alias), linked to `~/.gitconfig`
 - `raycast/`: Raycast script commands (Keep Awake, Keep Running). Add the folder once in Raycast: Settings → Extensions → + → Add Script Directory
 - `Brewfile`: apps and tools from Homebrew

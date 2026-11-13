@@ -129,6 +129,12 @@ link "$DOTFILES/ghostty/config" ~/.config/ghostty/config
 
 link "$DOTFILES/rex/init.lua" ~/.config/rex/init.lua
 
+# Claude Code: my own skills, one link per skill so the skills other tools install
+# into ~/.claude/skills (Rex's, the synced ones) stay in place
+for skill in "$DOTFILES"/skills/*/; do
+  link "${skill%/}" ~/.claude/skills/"$(basename "$skill")"
+done
+
 # git: name, email, and the rest of the settings
 link "$DOTFILES/git/.gitconfig" ~/.gitconfig
 
