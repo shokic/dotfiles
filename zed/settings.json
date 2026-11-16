@@ -54,12 +54,8 @@
   // Show the blame for the current line in the status bar instead of next to the code
   "git": { "inline_blame": { "location": "status_bar" } },
 
-  // ── Formatting ───────────────────────────────────────────────────
-  "format_on_save": "on",
-  // Use Prettier for every language, not just the ones Zed enables it for by default
-  // "code_actions_on_format": { "source.fixAll.eslint": true },
-
   // ── Language servers ─────────────────────────────────────────────
+  // Formatters and linters are chosen per project, in its .zed/settings.json
   "lsp": {
     // TypeScript/JavaScript
     "vtsls": {
