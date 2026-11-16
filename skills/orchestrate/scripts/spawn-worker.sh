@@ -1,6 +1,6 @@
 #!/bin/bash
 # Starts a worker: a Claude Code session in its own Rex tab, in its own git worktree,
-# with a shell pane below it in the same worktree.
+# with a shell pane beside it in the same worktree.
 #
 #   spawn-worker.sh NAME [--base REF] [--branch BRANCH] [--no-worktree] [--no-shell]
 #
@@ -48,16 +48,19 @@ else
 fi
 
 # The model and the effort are always passed: without them the worker would use the user's
-# defaults, which may be the orchestrator's expensive model
+# defaults, which may be the orchestrator's expensive model. --add-dir lets the worker read
+# its brief and write its report in the main checkout without a permission prompt; it takes
+# several values, so another option must follow it.
+touch "$RUN_DIR/$NAME.asked"
 created="$(rex window new -s "$REX_SESSION" "$NAME" -c "$DIR" --focus=false --json -- \
-  claude --model "$MODEL" --effort "$EFFORT" --permission-mode auto -n "$NAME" \
-  "You are a worker in an orchestrated run. Read $BRIEF and carry it out.")"
+  claude --add-dir "$RUN_DIR" --model "$MODEL" --effort "$EFFORT" --permission-mode auto -n "$NAME" \
+  "You are a worker in an orchestrated run. Read $BRIEF and carry it out. Commit messages carry no Co-Authored-By line and no AI attribution.")"
 BLOCK="$(echo "$created" | jq -er '.block_ids[0]')"
 WINDOW="$(echo "$created" | jq -er '.window_id')"
 
 SHELL_BLOCK=""
 if [ -n "$SHELL_PANE" ]; then
-  SHELL_BLOCK="$(rex split -s "$REX_SESSION" -b "$BLOCK" --split=below --ratio 25 --label "$NAME shell" \
+  SHELL_BLOCK="$(rex split -s "$REX_SESSION" -b "$BLOCK" --split=right --ratio 35 --label "$NAME shell" \
     --focus=false -c "$DIR" --json | jq -er '.block_ids[0]')"
 fi
 
