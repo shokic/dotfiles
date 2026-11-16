@@ -57,8 +57,7 @@
   // ── Formatting ───────────────────────────────────────────────────
   "format_on_save": "on",
   // Use Prettier for every language, not just the ones Zed enables it for by default
-  "prettier": { "allowed": true },
-  "code_actions_on_format": { "source.fixAll.eslint": true },
+  // "code_actions_on_format": { "source.fixAll.eslint": true },
 
   // ── Language servers ─────────────────────────────────────────────
   "lsp": {
