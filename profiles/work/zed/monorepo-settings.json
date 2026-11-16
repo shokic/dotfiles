@@ -13,11 +13,12 @@
       }
     }
   },
-  // Zed starts its bundled ESLint server for JS/TS by default. ESLint is gone from the repo, so it crashes looking for it.
+  // Zed starts its bundled ESLint server for JS, TS and Vue by default. ESLint is gone from the repo, so it crashes looking for it.
   "languages": {
     "TypeScript": { "language_servers": ["!eslint", "..."], "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
     "TSX": { "language_servers": ["!eslint", "..."], "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
     "JavaScript": { "language_servers": ["!eslint", "..."], "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
+    "Vue.js": { "language_servers": ["!eslint", "..."] },
     "JSON": { "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
     "JSONC": { "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
     "CSS": { "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
