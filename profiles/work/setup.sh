@@ -20,3 +20,12 @@ if command -v granted > /dev/null && ! grep -qx 'ExportSSOToken = true' ~/.grant
   granted settings set -s ExportSSOToken -v true
   echo "granted: SSO logins are now also saved for the AWS CLI and SDKs"
 fi
+
+# Zed settings for the work monorepo (oxfmt as the formatter, type-aware oxlint). Editor settings
+# aren't committed there, so they live here and are linked into the clone, when there is one.
+MONOREPO=~/code/monorepo
+if [ -d "$MONOREPO/.git" ]; then
+  link "$DOTFILES/profiles/work/zed/monorepo-settings.json" "$MONOREPO/.zed/settings.json"
+  # Keep the link out of that repo's `git status` without touching its .gitignore
+  grep -qxF '.zed/' "$MONOREPO/.git/info/exclude" 2>/dev/null || echo '.zed/' >> "$MONOREPO/.git/info/exclude"
+fi

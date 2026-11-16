@@ -1,0 +1,26 @@
+// Zed settings for the work monorepo, linked there as .zed/settings.json by profiles/work/setup.sh.
+// Formats with oxfmt and lints with oxlint, as its CI does. Without the "formatter" entries, Zed formats
+// on save with its own bundled Prettier and its default style. Kept per project, so Prettier stays
+// available in other projects.
+{
+  "lsp": {
+    "oxlint": {
+      "initialization_options": {
+        "settings": {
+          // Also show the rules that need type information, as `yarn lint` does
+          "typeAware": true
+        }
+      }
+    }
+  },
+  "languages": {
+    "TypeScript": { "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
+    "TSX": { "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
+    "JavaScript": { "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
+    "JSON": { "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
+    "JSONC": { "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
+    "CSS": { "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
+    "Markdown": { "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] },
+    "YAML": { "prettier": { "allowed": false }, "formatter": [{ "language_server": { "name": "oxfmt" } }] }
+  }
+}

@@ -27,7 +27,7 @@ A Mac is either `work` or `personal`. The first `./setup.sh` asks (or takes it a
 Everything is shared, except:
 - `Brewfile`: the apps and tools in its `if profile == "work"` block
 - `tools.sh`: the tools in `WORK_TOOLS`
-- `profiles/<profile>/setup.sh`: run by `setup.sh` at the end. The work one links the AWS config (SSO profiles) from `iCloud Drive/aws/config`, and sets up granted
+- `profiles/<profile>/setup.sh`: run by `setup.sh` at the end. The work one links the AWS config (SSO profiles) from `iCloud Drive/aws/config`, sets up granted, and links the Zed settings of the work monorepo (`profiles/work/zed/`) into `~/code/monorepo/.zed`
 
 After switching a Mac to `personal`, `brew bundle cleanup --force` removes the work apps.
 
